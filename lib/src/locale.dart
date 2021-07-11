@@ -1,6 +1,6 @@
 class Locale {
-  String languageCode;
-  String countryCode;
+  String? languageCode;
+  String? countryCode;
 
   Locale(this.languageCode, [this.countryCode]);
 
@@ -37,12 +37,12 @@ class Locale {
     }
   }
 
-  bool isSameLocale(Locale locale) {
-    return locale.languageCode == languageCode &&
-        locale.countryCode == countryCode;
+  bool isSameLocale(Locale? locale) {
+    return locale?.languageCode == languageCode &&
+        locale?.countryCode == countryCode;
   }
 
   bool isEmpty() {
-    return languageCode == null || languageCode.length < 1;
+    return languageCode == null || (languageCode?.length ?? 0) < 1;
   }
 }

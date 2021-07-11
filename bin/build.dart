@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:intl_manager/intl_manager.dart';
 import 'package:path/path.dart' as path;
-import 'package:args/args.dart';
-import 'package:shell/shell.dart';
+import 'package:process_run/shell.dart';
 
 final String defClassFileName = 'strings_define.dart';
 final String jsonConfigFileName = 'intl_manager.json';
@@ -18,28 +18,28 @@ final Map<String, String> helps = {
 };
 
 main(List<String> args) async {
-  String scanDir;
-  String outDir;
-  String genClass;
-  String genClassFileName;
-  String devLocaleStr;
+  String scanDir = '';
+  String outDir = '';
+  String genClass = '';
+  String genClassFileName = '';
+  String devLocaleStr = '';
   var parser = new ArgParser();
   parser.addOption('scan-dir',
-      callback: (x) => scanDir = x, help: helps['scan-dir']);
+      callback: (x) => scanDir = x ?? '', help: helps['scan-dir']);
   parser.addOption('out-dir',
-      callback: (x) => outDir = x, help: helps['out-dir']);
+      callback: (x) => outDir = x ?? '', help: helps['out-dir']);
   parser.addOption('gen-class',
-      callback: (x) => genClass = x, help: helps['gen-class']);
+      callback: (x) => genClass = x ?? '', help: helps['gen-class']);
   parser.addOption('file-name',
       defaultsTo: defClassFileName,
-      callback: (x) => genClassFileName = x,
+      callback: (x) => genClassFileName = x ?? '',
       help: helps['file-name']);
   parser.addOption('dev-locale',
-      callback: (x) => devLocaleStr = x, help: helps['dev-locale']);
+      callback: (x) => devLocaleStr = x ?? '', help: helps['dev-locale']);
   parser.parse(args);
 
   if (args.length == 0) {
-    Map<String, dynamic> json = readConfigFileJson();
+    Map<String, dynamic>? json = readConfigFileJson();
     if (json == null) {
       print('''
       can't find "$jsonConfigFileName" config file. and no valide args
@@ -62,7 +62,7 @@ main(List<String> args) async {
     exit(0);
     return;
   }
-  Locale devLocale = Locale.parse(devLocaleStr);
+  Locale devLocale = Locale.parse(devLocaleStr ?? '');
   if (devLocale.isEmpty()) {
     print('--dev-locale invalide : $devLocaleStr');
     print(parser.usage);
@@ -77,7 +77,7 @@ main(List<String> args) async {
       genClass: genClass,
       genClassFile: genClassFile,
       devLocale: devLocale);
-  BuildResult result = builder.build();
+  BuildResult? result = builder.build();
   if (result != null && result.isOk) {
     var shell = Shell();
     final cmd = 'flutter';
@@ -91,16 +91,16 @@ main(List<String> args) async {
       'lib/i18n/gen/$genClassFileName',
     ];
 
-    for (String fileName in result.arbFilenNames) {
+    for (String fileName in result.arbFileNames) {
       args.add('$outDir/$fileName');
       print('$outDir/$fileName');
     }
-    var cmdResult = await shell.startAndReadAsString(cmd, args);
+    var cmdResult = await shell.runExecutableArguments(cmd, args);
     print('build done $cmdResult,please check the outDir:$outDir');
   }
 }
 
-Map<String, dynamic> readConfigFileJson() {
+Map<String, dynamic>? readConfigFileJson() {
   File file = File(path.join(path.current, jsonConfigFileName));
   print(file.path);
   if (!file.existsSync()) {
