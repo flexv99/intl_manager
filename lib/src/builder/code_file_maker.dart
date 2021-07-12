@@ -43,8 +43,8 @@ String _makeSupportedLocaleCode(List<I18nEntity> supportedLocale) {
         _supportedLocaleMap.substring(0, _supportedLocaleMap.length - 1);
   }
   return '''
-  static const List<String> _supportedLanguageCode = [${_supportedLanguageCode ?? ''}];
-  static const List<List<String>> _supportedLocaleMap = [${_supportedLocaleMap ?? ''}];
+  static const List<String> _supportedLanguageCode = [${_supportedLanguageCode}];
+  static const List<List<String>> _supportedLocaleMap = [${_supportedLocaleMap}];
 
   static List<String> getSupportedLanguageCodes(){
     return _supportedLanguageCode;

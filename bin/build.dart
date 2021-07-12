@@ -18,11 +18,11 @@ final Map<String, String> helps = {
 };
 
 main(List<String> args) async {
-  String scanDir = '';
-  String outDir = '';
-  String genClass = '';
-  String genClassFileName = '';
-  String devLocaleStr = '';
+  String? scanDir = '';
+  String? outDir = '';
+  String? genClass = '';
+  String? genClassFileName = '';
+  String? devLocaleStr = '';
   var parser = new ArgParser();
   parser.addOption('scan-dir',
       callback: (x) => scanDir = x ?? '', help: helps['scan-dir']);
@@ -46,7 +46,6 @@ main(List<String> args) async {
       ''');
       print(parser.usage);
       exit(0);
-      return;
     }
     scanDir = json['scan-dir'];
     outDir = json['out-dir'];
@@ -60,21 +59,19 @@ main(List<String> args) async {
       devLocaleStr == null) {
     print(parser.usage);
     exit(0);
-    return;
   }
-  Locale devLocale = Locale.parse(devLocaleStr ?? '');
+  Locale devLocale = Locale.parse(devLocaleStr!);
   if (devLocale.isEmpty()) {
-    print('--dev-locale invalide : $devLocaleStr');
+    print('--dev-locale invalid : $devLocaleStr');
     print(parser.usage);
     exit(0);
-    return;
   }
   final File genClassFile =
-      File(path.join(path.absolute(outDir), genClassFileName));
+      File(path.join(path.absolute(outDir!), genClassFileName));
   IntlBuilder builder = IntlBuilder(
-      scanDir: path.absolute(scanDir),
-      outDir: path.absolute(outDir),
-      genClass: genClass,
+      scanDir: path.absolute(scanDir!),
+      outDir: path.absolute(outDir!),
+      genClass: genClass!,
       genClassFile: genClassFile,
       devLocale: devLocale);
   BuildResult? result = builder.build();
