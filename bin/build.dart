@@ -82,7 +82,7 @@ main(List<String> args) async {
       'packages',
       'pub',
       'run',
-      'intl_translation:generate_from_arb',
+      'intl_generator:generate_from_arb',
       '--output-dir=$outDir',
       '--no-use-deferred-loading',
       'lib/i18n/gen/$genClassFileName',
